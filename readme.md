@@ -1,0 +1,1 @@
+Christopher wrote class methods with guidance from Christian. Christian wrote the user interface.
