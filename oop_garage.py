@@ -8,15 +8,22 @@ def getPosInt(prompt):
         if quantity.isdigit():
             return int(quantity)
         else:
-            print("Please enter your ticket number.")
+            print("Please enter a positive number.")
 
 class ParkingGarage():
-    def __init__(self,size):
-        print("Hello I have been created")
-        self.spaces = [0 for i in range(size)] # True = filled [False for i in range(5)]
+    def __init__(self, size):
+        # print("Hello I have been created")
+        self.spaces = [0 for i in range(size)] # 0 = empty space, otherwise it's the ticket number
         # The only property that varies between garages is the size of the garages.
         self.ticketsSold = 0 # Always zero for any new garage
         self.ticketStatus = {} # True = paid, False = unpaid
+
+    def showGarageStatus(self):
+        print(f"{self.ticketsSold} tickets have been sold.")
+        print(f"There are {self.spaces.count(0)} available spaces")
+        print(self.spaces)
+        print(self.ticketStatus)
+
 
     def takeTicket(self):
         if 0 in self.spaces:
@@ -36,6 +43,12 @@ class ParkingGarage():
     # - Add the ticket to the currentTicket dictionary with False(for unpaid)
 
     def payForParking(self,ticketnum = 0):
+        # we decided it made more sense to make the payment a strict yes or no
+        # hope that's ok
+        # otherwise we would have made ticketStatus hold an amount left on the ticket to be paid
+        # ask the user here how much they're paying towards it
+        # subtract amount paid from ticketStatus up to the amount that's left to be paid for the ticket
+        # if ticketStatus is 0, it means the ticket is paid for
         while True:
             if ticketnum == 0:
                 ticketnum = getPosInt("Please enter your ticket number or enter '0' to exit.")
@@ -70,16 +83,16 @@ class ParkingGarage():
             ticketnum = getPosInt("Please enter your ticket number or enter '0' to exit.")
             if ticketnum == 0:
                 return # quit out of function entirely
-            print(self.spaces)
+            # print(self.spaces)
             
             if ticketnum in self.spaces:
-                print(self.ticketStatus[ticketnum])
+                # print(self.ticketStatus[ticketnum])
                 if self.ticketStatus[ticketnum] == False:
                     while True:
                         userpayment = input("Leave parking garage and pay now? (y/n)").lower()
                         if userpayment == 'y':
                             self.payForParking(ticketnum)
-                            print(self.ticketStatus[ticketnum])
+                            # print(self.ticketStatus[ticketnum])
                             if self.ticketStatus[ticketnum]:
                                 self.spaces[self.spaces.index(ticketnum)] = 0
                                 print("Thank you for parking with us, have a nice day.")
@@ -98,11 +111,43 @@ class ParkingGarage():
                     return
 
         
-garageA = ParkingGarage(100)
-garageA.takeTicket()
-garageA.payForParking()
-garageA.leaveGarage()
 
+def runGarage():
+    while True:
+        garageSize = getPosInt("How many spaces should the garage have?: ")
+        if garageSize != 0:
+            garage = ParkingGarage(garageSize)
+            break
+        else:
+            print("A garage must have at least one space.")
+
+    garagePrompt = \
+"""
+Choose an option:
+1. Take new ticket
+2. Pay for ticket
+3. Leave garage
+4. Show garage status
+5. Quit program
+
+"""
+    while True:
+        cmd = getPosInt(garagePrompt)
+        print()
+        if cmd == 1:
+            garage.takeTicket()
+        elif cmd == 2:
+            garage.payForParking()
+        elif cmd == 3:
+            garage.leaveGarage()
+        elif cmd == 4:
+            garage.showGarageStatus()
+        elif cmd == 5:
+            return
+        else:
+            print("Please enter a valid option.")
+
+runGarage()
 
 
 #leaveGarage
